@@ -1,9 +1,11 @@
+// libraries
 const { hash, compare } = require('bcrypt')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const express = require('express')
 const app = express()
 
+// project files
 const { User } = require('./models/userModel')
 const { createToken, authenticateToken : auth } = require('./middlewares/jwt')
 
@@ -40,6 +42,7 @@ app.post('/signup', async (req,res) => {
     }
 })
 
+// login
 app.post('/login', async (req,res) => {
     
     const { body : { email, password } } = req;
