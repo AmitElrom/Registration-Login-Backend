@@ -23,23 +23,23 @@ app.post('/signup', async (req,res) => {
     // check if user with same email already exists
     const user = await User.findOne({email})
 
-    if(user) res.status(400).json({ message : 'User already exists' })
+    if(user) return res.status(400).json({ message : 'User already exists' })
 
-    // hash password
-    const hashedPassword = await hash(password, 10)
+        // hash password
+        const hashedPassword = await hash(password, 10)
 
-    // create new user
-    try {
-        const newUser = await User.create({
-            email,
-            password : hashedPassword
-        })
-        
-        res.status(201)
-            .json({ message : `new user with email ${newUser.email} was cerated successfully` })
-    } catch (err) {
-        res.status(400).json({ error : err })
-    }
+        // create new user
+        try {
+            const newUser = await User.create({
+                email,
+                password : hashedPassword
+            })
+            
+            return res.status(201)
+                .json({ message : `new user with email ${newUser.email} was created successfully` })
+        } catch (err) {
+            return res.status(400).json({ error : err })
+        }
 })
 
 // login
