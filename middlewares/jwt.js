@@ -11,23 +11,22 @@ const createToken = (user) => {
 
 // middleware
 const authenticateToken = (req,res,next) => {
-    const accessToken = req.cookie['access-token']
+    const accessToken = req.cookies['access-token']
 
-    if(!accessToken) res.status(401).json({ error : 'User is not authenticated' })
+    if(!accessToken) return res.status(401).json({ error : 'User is not authenticated' })
 
-    // if token exists - check if token in cookies is the same as in env file (ACCESS_TOKEN_KEY)
-    try {
-        const authenticatedToken = verify(accessToken,process.env.ACCESS_TOKEN_KEY)
-        if(authenticatedToken) {
-            req.authenticated = true
-            req.user = authenticatedToken
-            next() 
-            // next - function that makes the next function. only if next exist the request will be performed.
+        // if token exists - check if token in cookies is the same as in env file (ACCESS_TOKEN_KEY)
+        try {
+            const authenticatedToken = verify(accessToken,process.env.ACCESS_TOKEN_KEY)
+            if(authenticatedToken) {
+                req.authenticated = true
+                req.user = authenticatedToken
+                return next() 
+                // next - function that makes the next function. only if next exist the request will be performed.
+            }
+        } catch (err) {
+            return res.status(401).json({ error : 'User is not authorized' })
         }
-    } catch (err) {
-        res.status(401).json({ error : err })
-    }
-
 }
 
 module.exports = { createToken, authenticateToken }

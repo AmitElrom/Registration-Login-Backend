@@ -50,14 +50,14 @@ app.post('/login', async (req,res) => {
     // find user in db by email/username/etc
     const user = await User.findOne({email})
 
-    if(!user) res.status(400).json({ error : 'User does not exist' })
+    if(!user) return res.status(400).json({ error : 'User does not exist' })
 
     const { password : dbPassword } = user; // hashed password in db
     
     // compare inserted password and password in db(hashed password)
     const match = await compare(password, dbPassword) // match is a boolean value
 
-    if(!match) res.status(400).json({ error : 'Wrong email and password combination' })
+    if(!match) return res.status(400).json({ error : 'Wrong email and password combination' })
 
     // create token for user
     const accessToken = createToken(user)
@@ -75,7 +75,7 @@ app.post('/login', async (req,res) => {
 
 // example get request
 app.get('/profile', auth, (req,res) => {
-    res.json(req.body)
+    return res.json(req.user)
 })
 
 app.listen(8000, () => {
